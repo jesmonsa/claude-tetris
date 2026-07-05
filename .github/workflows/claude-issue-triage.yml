@@ -1,0 +1,100 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  triage:
+    # Evita solaparse con claude.yml (que maneja issues con @claude directamente)
+    if: |
+      !contains(github.event.issue.body, '@claude') &&
+      !contains(github.event.issue.title, '@claude')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      id-token: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Issue Triage
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: '--allowed-tools "Bash(gh label list),Bash(gh label create *),Bash(gh issue view *),Bash(gh issue edit *),Bash(gh issue comment *),Read,Grep,Glob"'
+          prompt: |
+            Analiza el issue #${{ github.event.issue.number }} de este repositorio.
+            Es un Tetris completo en JS vanilla + HTML5 Canvas. Todo el juego vive en
+            game.js (~305 líneas); index.html tiene el canvas y la barra lateral; style.css
+            maneja el tema visual. No hay build, ni módulos, ni dependencias.
+
+            Haz exactamente DOS cosas y nada más:
+
+            ── 1) ASIGNAR LABELS ──────────────────────────────────────────────────────
+
+            Lee el issue:
+              gh issue view ${{ github.event.issue.number }}
+
+            Consulta los labels existentes en el repo:
+              gh label list
+
+            Elige entre 1 y 4 labels apropiados de esta taxonomía:
+              bug           → comportamiento incorrecto o crash
+              feature       → funcionalidad nueva que no existe
+              enhancement   → mejora sobre algo ya existente
+              question      → duda o consulta
+              documentation → cambios solo en docs/comentarios
+              ui            → aspecto visual, canvas, colores, layout
+              gameplay      → mecánicas, físicas, piezas, scoring, nivel
+              performance   → optimización de velocidad o memoria
+              refactor      → reorganización de código sin cambio funcional
+
+            Añade también uno de estos si aplica:
+              priority:alta · priority:media · priority:baja
+
+            Para cada label elegido que NO exista aún en el repo, créalo:
+              gh label create "<nombre>" --color "<hex>" --description "<descripción corta>"
+              (usa colores representativos, ej: bug=#d73a4a, feature=#0075ca,
+               enhancement=#a2eeef, ui=#e4e669, gameplay=#7057ff, performance=#008672)
+
+            Aplica todos los labels elegidos de una vez:
+              gh issue edit ${{ github.event.issue.number }} --add-label "<label1>,<label2>,..."
+
+            ── 2) PUBLICAR DIAGNÓSTICO ────────────────────────────────────────────────
+
+            Revisa los archivos relevantes del repo (game.js, index.html, style.css)
+            para fundamentar el diagnóstico con referencias concretas al código.
+
+            Publica UN comentario con este formato exacto (en español):
+
+            ## 🔍 Diagnóstico automático
+
+            **Resumen:** (qué pide o reporta el issue en una frase)
+
+            **Tipo:** (bug / feature / enhancement / etc.)
+
+            **Área afectada:** (archivos y funciones concretas, con números de línea si aplica)
+
+            **Causa probable:** (explicación técnica breve; omitir si es feature request)
+
+            **Enfoque de solución sugerido:**
+            - paso 1
+            - paso 2
+            - ...
+
+            **Complejidad estimada:** baja / media / alta
+
+            ---
+            *Diagnóstico generado automáticamente. Puede editarse antes de implementar.*
+
+            Usa:
+              gh issue comment ${{ github.event.issue.number }} --body "<comentario>"
+
+            ── RESTRICCIONES ──────────────────────────────────────────────────────────
+            - NO incluyas la cadena "@claude" en ningún texto que publiques.
+            - NO abras PRs ni modifiques archivos del repositorio.
+            - NO hagas nada más allá de los dos pasos anteriores.
