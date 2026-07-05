@@ -13,6 +13,11 @@ const COLORS = [
   '#e57373', // Z - red
   '#64b5f6', // J - azul pálido
   '#ffb74d', // L - orange
+  '#f06292', // + cross - magenta
+  '#aed581', // U - lima
+  '#ff8a65', // Y - naranja
+  '#fff176', // single - amarillo brillante
+  '#ce93d8', // hollow 3×3 - lila
 ];
 
 const PIECES = [
@@ -25,6 +30,15 @@ const PIECES = [
   [[6,0,0],[6,6,6],[0,0,0]],                  // J
   [[0,0,7],[7,7,7],[0,0,0]],                  // L
 ];
+
+// Tipos 8-12: piezas especiales. Las formas usan el índice como valor de color.
+const SPECIAL_SHAPES = {
+  8:  [[0,8,0],[8,8,8],[0,8,0]],           // + cross (pentominó)
+  9:  [[9,0,9],[9,9,9],[0,0,0]],           // U (pentominó)
+  10: [[0,10],[10,10],[0,10],[0,10]],       // Y (pentominó)
+  11: [[11]],                               // single 1×1 (recompensa Tetris)
+  12: [[12,12,12],[12,0,12],[12,12,12]],   // hueca 3×3 (rara)
+};
 
 const LINE_SCORES = [0, 100, 300, 500, 800];
 
@@ -48,15 +62,32 @@ const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeToggle = document.getElementById('theme-toggle');
 
-let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId;
+let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, pendingSingle;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
 }
 
+function makeShape(type) {
+  const src = type <= 7 ? PIECES[type] : SPECIAL_SHAPES[type];
+  return src.map(row => [...row]);
+}
+
 function randomPiece() {
-  const type = Math.floor(Math.random() * 7) + 1;
-  const shape = PIECES[type].map(row => [...row]);
+  let type;
+  if (pendingSingle) {
+    pendingSingle = false;
+    type = 11;
+  } else {
+    // Pesos: clásicas 84%, cross 6%, U 5%, Y 4%, hueca 1%
+    const roll = Math.random() * 100;
+    if      (roll < 84) type = Math.floor(Math.random() * 7) + 1;
+    else if (roll < 90) type = 8;
+    else if (roll < 95) type = 9;
+    else if (roll < 99) type = 10;
+    else                type = 12;
+  }
+  const shape = makeShape(type);
   return { type, shape, x: Math.floor(COLS / 2) - Math.floor(shape[0].length / 2), y: 0 };
 }
 
@@ -112,6 +143,7 @@ function clearLines() {
     }
   }
   if (cleared) {
+    if (cleared === 4) pendingSingle = true; // recompensa Tetris: próxima pieza es single
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
     level = Math.floor(lines / 10) + 1;
@@ -273,6 +305,7 @@ function init() {
   level = 1;
   paused = false;
   gameOver = false;
+  pendingSingle = false;
   dropInterval = 1000;
   dropAccum = 0;
   lastTime = performance.now();
