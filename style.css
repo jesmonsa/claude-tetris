@@ -258,3 +258,168 @@ kbd {
 #restart-btn:hover {
   background: var(--color-accent-hover);
 }
+
+/* ---- Pantalla de inicio ---- */
+.start-box {
+  min-width: 260px;
+  max-width: 320px;
+}
+
+.start-title {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: 8px;
+  color: var(--color-accent);
+  text-shadow: 0 0 20px var(--title-shadow);
+}
+
+.start-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.start-stats strong {
+  color: var(--color-accent);
+}
+
+.start-stats.hidden,
+#name-entry.hidden {
+  display: none;
+}
+
+.start-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+  width: 100%;
+}
+
+#play-btn {
+  background: var(--color-accent);
+  color: var(--color-btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 12px 40px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: background 0.15s;
+}
+
+#play-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+.btn-danger {
+  background: transparent;
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+  border-radius: 6px;
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-danger:hover {
+  background: var(--color-danger);
+  color: #fff;
+}
+
+/* ---- Tabla de records ---- */
+.hs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.hs-table th {
+  text-align: left;
+  color: var(--color-label);
+  font-size: 10px;
+  letter-spacing: 1px;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.hs-table td {
+  padding: 5px 8px;
+  color: var(--color-fg);
+}
+
+.hs-table tbody tr:not(:last-child) td {
+  border-bottom: 1px solid var(--color-border);
+}
+
+tr.hs-new td {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.hs-empty {
+  font-size: 13px;
+  color: var(--color-muted);
+  text-align: center;
+  padding: 8px 0;
+}
+
+/* ---- Entrada de nombre (game over) ---- */
+#name-entry {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+}
+
+.name-prompt {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+#player-name {
+  background: var(--color-kbd-bg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  color: var(--color-fg);
+  font-size: 14px;
+  padding: 6px 12px;
+  text-align: center;
+  width: 160px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+#player-name:focus {
+  border-color: var(--color-accent);
+}
+
+#save-score-btn {
+  background: var(--color-accent);
+  color: var(--color-btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 6px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+
+#save-score-btn:hover {
+  background: var(--color-accent-hover);
+}
+
+#overlay-scores {
+  width: 100%;
+}
