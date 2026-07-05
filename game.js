@@ -79,12 +79,12 @@ function randomPiece() {
     pendingSingle = false;
     type = 11;
   } else {
-    // Pesos: clásicas 84%, cross 6%, U 5%, Y 4%, hueca 1%
+    // Pesos: clásicas 80%, cross 6%, U 5%, Y 4%, hueca 5%
     const roll = Math.random() * 100;
-    if      (roll < 84) type = Math.floor(Math.random() * 7) + 1;
-    else if (roll < 90) type = 8;
-    else if (roll < 95) type = 9;
-    else if (roll < 99) type = 10;
+    if      (roll < 80) type = Math.floor(Math.random() * 7) + 1;
+    else if (roll < 86) type = 8;
+    else if (roll < 91) type = 9;
+    else if (roll < 95) type = 10;
     else                type = 12;
   }
   const shape = makeShape(type);
@@ -291,6 +291,9 @@ function loop(ts) {
       current.y++;
     } else {
       lockPiece();
+      // Fuerza el drop inmediato de la nueva pieza en el siguiente frame,
+      // evitando esperar dropInterval completo cuando el tablero ya está lleno.
+      if (!gameOver) dropAccum = dropInterval;
     }
   }
   if (gameOver) return;
