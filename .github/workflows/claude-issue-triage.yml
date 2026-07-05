@@ -69,7 +69,11 @@ jobs:
             Revisa los archivos relevantes del repo (game.js, index.html, style.css)
             para fundamentar el diagnóstico con referencias concretas al código.
 
-            Publica UN comentario con este formato exacto (en español):
+            Publica UN comentario con este formato exacto (en español).
+            El comentario debe estar escrito en Markdown válido para GitHub:
+            usa `##` para encabezados, `**texto**` para negrita, `-` para listas,
+            y comillas invertidas para nombres de archivos o funciones.
+            NO uses HTML ni caracteres de formato no estándar.
 
             ## 🔍 Diagnóstico automático
 
