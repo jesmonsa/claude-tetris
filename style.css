@@ -258,3 +258,114 @@ kbd {
 #restart-btn:hover {
   background: var(--color-accent-hover);
 }
+
+/* ---- Menú de pausa ---- */
+.pause-menu {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-overlay-bg);
+  backdrop-filter: blur(4px);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+  z-index: 10;
+}
+
+.pause-menu.hidden {
+  display: none;
+}
+
+.pause-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+  min-width: 200px;
+  padding: 4px;
+}
+
+.pause-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--color-accent);
+}
+
+.pm-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pm-buttons button {
+  background: var(--color-accent);
+  color: var(--color-btn-text);
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+  width: 100%;
+}
+
+.pm-buttons button:hover {
+  background: var(--color-accent-hover);
+}
+
+.pm-controls-list {
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+.pm-controls-list.hidden {
+  display: none;
+}
+
+.pm-controls-list ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.pm-controls-list li {
+  font-size: 12px;
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pm-level-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+.pm-level-row label {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.pm-level-row input {
+  width: 60px;
+  background: var(--color-kbd-bg);
+  border: 1px solid var(--color-kbd-border);
+  border-radius: 4px;
+  color: var(--color-fg);
+  padding: 4px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
