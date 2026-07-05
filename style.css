@@ -203,6 +203,24 @@ kbd {
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
+/* ---- Skin selector ---- */
+#skin-select {
+  background: var(--color-kbd-bg);
+  color: var(--color-fg);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+  cursor: pointer;
+  width: 100%;
+  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+#skin-select:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
 /* ---- Overlay ---- */
 .overlay {
   position: absolute;
