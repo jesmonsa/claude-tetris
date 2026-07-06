@@ -61,8 +61,15 @@ const overlayTitle = document.getElementById('overlay-title');
 const overlayScore = document.getElementById('overlay-score');
 const restartBtn = document.getElementById('restart-btn');
 const themeToggle = document.getElementById('theme-toggle');
+const pauseMenu = document.getElementById('pause-menu');
+const pmLevelInput = document.getElementById('pm-level-input');
+const pmControlsList = document.getElementById('pm-controls');
 
-let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, pendingSingle;
+let board, current, next, score, lines, level, paused, gameOver, lastTime, dropAccum, dropInterval, animId, pendingSingle, gameStartLevel;
+
+let startLevel = parseInt(localStorage.getItem('tetris-startlevel') || '1', 10);
+if (isNaN(startLevel) || startLevel < 1 || startLevel > 10) startLevel = 1;
+pmLevelInput.value = startLevel;
 
 function createBoard() {
   return Array.from({ length: ROWS }, () => new Array(COLS).fill(0));
@@ -146,7 +153,8 @@ function clearLines() {
     if (cleared === 4) pendingSingle = true; // recompensa Tetris: próxima pieza es single
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
-    level = Math.floor(lines / 10) + 1;
+    // never drop below the level this session started at
+    level = Math.max(gameStartLevel, Math.floor(lines / 10) + 1);
     dropInterval = Math.max(100, 1000 - (level - 1) * 90);
     updateHUD();
   }
@@ -271,13 +279,12 @@ function togglePause() {
   if (gameOver) return;
   paused = !paused;
   if (!paused) {
+    pauseMenu.classList.add('hidden');
     lastTime = performance.now();
     loop(lastTime);
   } else {
     cancelAnimationFrame(animId);
-    overlayTitle.textContent = 'PAUSA';
-    overlayScore.textContent = '';
-    overlay.classList.remove('hidden');
+    pauseMenu.classList.remove('hidden');
   }
 }
 
@@ -302,26 +309,29 @@ function loop(ts) {
 }
 
 function init() {
+  gameStartLevel = startLevel;
   board = createBoard();
   score = 0;
   lines = 0;
-  level = 1;
+  level = gameStartLevel;
   paused = false;
   gameOver = false;
   pendingSingle = false;
-  dropInterval = 1000;
+  dropInterval = Math.max(100, 1000 - (gameStartLevel - 1) * 90);
   dropAccum = 0;
   lastTime = performance.now();
   next = randomPiece();
   spawn();
   updateHUD();
   overlay.classList.add('hidden');
+  pauseMenu.classList.add('hidden');
+  pmControlsList.classList.add('hidden');
   cancelAnimationFrame(animId);
   animId = requestAnimationFrame(loop);
 }
 
 document.addEventListener('keydown', e => {
-  if (e.code === 'KeyP') { togglePause(); return; }
+  if (e.code === 'KeyP' || e.code === 'Escape') { if (!gameOver) e.preventDefault(); togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
     case 'ArrowLeft':
@@ -346,6 +356,20 @@ document.addEventListener('keydown', e => {
 });
 
 restartBtn.addEventListener('click', init);
+
+document.getElementById('pm-resume').addEventListener('click', togglePause);
+document.getElementById('pm-restart').addEventListener('click', init);
+document.getElementById('pm-controls-toggle').addEventListener('click', () => {
+  pmControlsList.classList.toggle('hidden');
+});
+pmLevelInput.addEventListener('change', () => {
+  let v = parseInt(pmLevelInput.value, 10);
+  if (isNaN(v) || v < 1) v = 1;
+  if (v > 10) v = 10;
+  pmLevelInput.value = v;
+  startLevel = v;
+  localStorage.setItem('tetris-startlevel', String(v));
+});
 
 function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
