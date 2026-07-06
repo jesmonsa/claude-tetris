@@ -60,10 +60,33 @@
       </aside>
     </div>
 
+    <!-- Pantalla de inicio -->
+    <div id="start-screen" class="overlay hidden">
+      <div class="overlay-box start-box">
+        <p class="start-title">TETRIS</p>
+        <div id="start-scores"></div>
+        <div id="start-stats" class="start-stats hidden">
+          <span>Mejor combo: <strong id="stat-combo">0</strong> líneas</span>
+          <span>Máx. líneas: <strong id="stat-maxlines">0</strong></span>
+        </div>
+        <div class="start-actions">
+          <button id="play-btn">Jugar</button>
+          <button id="reset-scores-btn" class="btn-danger">Borrar records</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game over / pausa -->
     <div id="overlay" class="overlay hidden">
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+        <div id="name-entry" class="hidden">
+          <p class="name-prompt">¡Nuevo récord! Tu nombre:</p>
+          <input type="text" id="player-name" maxlength="12" placeholder="Anónimo" autocomplete="off" />
+          <button id="save-score-btn">Guardar</button>
+        </div>
+        <div id="overlay-scores"></div>
         <button id="restart-btn">Reiniciar</button>
       </div>
     </div>
